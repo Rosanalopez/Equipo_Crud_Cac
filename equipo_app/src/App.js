@@ -1,21 +1,20 @@
+import { BrowserRouter,Routes,Route } from "react-router-dom";
 import './App.css';
+
+import {Show} from "./components/Show"
+import { Create } from "./components/Create";
+// import { Edit } from "./components/Edit";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Vamos a crear un CRUD con React!
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Show/>}/>
+          <Route path="/create" element={<Create/>}/>
+          <Route path="/edit/:id" element="Edit"/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
