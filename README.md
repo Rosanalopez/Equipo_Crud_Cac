@@ -62,6 +62,13 @@ El principal endpoint es:
 ## Libros
 - Listar todos los libros
     - GET /book/
+    El endpoint devuelve el total de libros pero no más de 1000 libros por página.
+
+- Listar libros paginados
+    - GET /book/?page=< page >&limit=< limit
+    - page: número de página
+    - limit: número de libros por página
+
 - Crear un nuevo libro
     - POST /book/
     ```
