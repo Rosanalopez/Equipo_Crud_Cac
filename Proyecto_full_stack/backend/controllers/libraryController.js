@@ -1,8 +1,8 @@
 const Library = require('../models/libraryModel');
 
 
-// GENRE -----------------------------------------------------
-// Get all genres
+// GÉNERO -----------------------------------------------------
+// Obtiene todos los géneros
 exports.getAllGenres = async (req, res, next) => {
     try {
         const genres = await Library.genreModel.findAll();
@@ -21,7 +21,7 @@ exports.getAllGenres = async (req, res, next) => {
     }
 };
 
-// Get a genre by id
+// Obtiene un género por id
 exports.getGenre = async (req, res, next) => {
     try {
         const genre = await Library.genreModel.findByPk(req.params.id);
@@ -44,7 +44,7 @@ exports.getGenre = async (req, res, next) => {
     }
 };
 
-// Create a genre
+// Crear un género
 exports.createGenre = async (req, res, next) => {
     try {
         const genre = await Library.genreModel.create(req.body);
@@ -62,7 +62,7 @@ exports.createGenre = async (req, res, next) => {
     }
 };
 
-// Update a genre
+// Actualiza un género
 exports.updateGenre = async (req, res, next) => {
     try {
         const genre = await Library.genreModel.update(req.body, {
@@ -84,7 +84,7 @@ exports.updateGenre = async (req, res, next) => {
     }
 };
 
-// Delete a genre
+// Elimina un género
 exports.deleteGenre = async (req, res, next) => {
     try {
         await Library.genreModel.destroy({
@@ -105,8 +105,8 @@ exports.deleteGenre = async (req, res, next) => {
 }
 
 
-// AUTHORS -----------------------------------------------------
-// Get all Authors
+// AUTORES -----------------------------------------------------
+// Obtener todos los autores
 exports.getAllAuthors = async (req, res, next) => {
     try {
         const authors = await Library.authorModel.findAll();
@@ -125,7 +125,7 @@ exports.getAllAuthors = async (req, res, next) => {
     }
 };
 
-// Get an author by id
+// Obtener un autor por id
 exports.getAuthor = async (req, res, next) => {
     try {
         const author = await Library.authorModel.findByPk(req.params.id);
@@ -149,7 +149,7 @@ exports.getAuthor = async (req, res, next) => {
     }
 };
 
-// Create an author
+// Crear un autor
 exports.createAuthor = async (req, res, next) => {
     try {
         const author = await Library.authorModel.create(req.body);
@@ -167,7 +167,7 @@ exports.createAuthor = async (req, res, next) => {
     }
 };
 
-// Update an author
+// Actualiza un autor
 exports.updateAuthor = async (req, res, next) => {
     try {
         const author = await Library.authorModel.update(req.body, {
@@ -189,7 +189,7 @@ exports.updateAuthor = async (req, res, next) => {
     }
 };
 
-// Delete an Author
+// Elimina un autor
 exports.deleteAuthor = async (req, res, next) => {
     try {
         await Library.authorModel.destroy({
@@ -210,31 +210,19 @@ exports.deleteAuthor = async (req, res, next) => {
 }
 
 
-// BOOKS -----------------------------------------------------
-// Get all Books
+// LIBROS -----------------------------------------------------
+// Obtiene todos los libros
+// Si hay una query de consulta, usa la paginación
+// Si no, devuelve 1000 libros
 exports.getAllBooks = async (req, res, next) => {
-    if (req.query.page || req.query.limit) {
-        return getPaginateBooks(req, res, next);
-    } 
+    page = req.query.page || 1;
+    limit = req.query.limit || 1000;
+    books_count = await Library.bookModel.count();
 
-    try {
-        const books = await Library.bookModel.findAll();
-        res.status(200).json({
-            status: 'success',
-            results: books.length,
-            data: {
-                books
-            }
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(400).json({
-            status: 'fail'
-        });
-    }
+    return getPaginateBooks(res, page, limit, books_count);
 };
 
-// Get a Book by id
+// Obtiene un libro por id
 exports.getBook = async (req, res, next) => {
     try {
         const book = await Library.bookModel.findByPk(req.params.id);
@@ -258,7 +246,7 @@ exports.getBook = async (req, res, next) => {
     }
 };
 
-// Create a Book
+// Crea un libro
 exports.createBook = async (req, res, next) => {
     try {
         const book = await Library.bookModel.create(req.body);
@@ -276,7 +264,7 @@ exports.createBook = async (req, res, next) => {
     }
 };
 
-// Update a Book
+// Actualiza un libro
 exports.updateBook = async (req, res, next) => {
     try {
         const book = await Library.bookModel.update(req.body, {
@@ -298,7 +286,7 @@ exports.updateBook = async (req, res, next) => {
     }
 };
 
-// Delete an Book
+// Elimina un libro
 exports.deleteBook = async (req, res, next) => {
     try {
         await Library.bookModel.destroy({
@@ -319,11 +307,9 @@ exports.deleteBook = async (req, res, next) => {
 }
 
 
-// PAGINATION -----------------------------------------------------
-const getPaginateBooks = async (req, res, next) => {
+// PAGINACIÓN -----------------------------------------------------
+const getPaginateBooks = async (res, page, limit, books_count = 0) => {
     try {
-        const page = req.query.page * 1 || 1;
-        const limit = req.query.limit * 1 || 10;
         const skip = (page - 1) * limit;
 
         const books = await Library.bookModel.findAll({
@@ -333,7 +319,7 @@ const getPaginateBooks = async (req, res, next) => {
 
         res.status(200).json({
             status: 'success',
-            results: books.length,
+            results: Math.max(books.length, books_count),
             data: {
                 books
             }
