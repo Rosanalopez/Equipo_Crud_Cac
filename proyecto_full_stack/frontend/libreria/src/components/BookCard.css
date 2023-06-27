@@ -1,0 +1,19 @@
+.booksCard{
+    list-style: none;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.bookImage{
+    border-radius: 10px;
+    background-color: azure;
+    width: 230px;
+    height: 345px;
+}
+
+@media(max-width:560px){
+    .bookImage{
+width: 90%;
+height: auto;
+    } 
+}
