@@ -1,0 +1,24 @@
+
+services:
+  express-app:
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    environment:
+      - NODE_ENV=production
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - SESSION_SECRET=${SESSION_SECRET}
+    command: node server.js
+
+  nginx:
+    ports:
+      - "80:80"
+  
+  mysql:
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
